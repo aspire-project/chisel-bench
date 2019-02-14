@@ -1,0 +1,3 @@
+#!/bin/bash
+
+export CHISEL_BENCHMARK_HOME=$(pwd)
