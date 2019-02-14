@@ -1,8 +1,8 @@
-all: filewrap.a memwrap.a
+all: libfilewrap.a libmemwrap.a
 
-%.a : %.o
-	ar -rc lib$@ $<
-	ranlib lib$@
+lib%.a : %.o
+	ar -rc $@ $<
+	ranlib $@
 
 %.o : %.c
 	$(CC) -c $< -o $@

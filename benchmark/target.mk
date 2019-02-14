@@ -3,7 +3,7 @@ all: lib
 lib:
 	make -C $(CHISEL_BENCHMARK_HOME)/benchmark/lib
 
-reduce:
+reduce: lib
 	cp $(SRC).origin.c $(SRC)
 	$(CC) -w $(SRC) -o $(ORIGIN_BIN) $(CFLAGS) $(LFLAGS)
 	chisel ./$(ORACLE) $(SRC)
