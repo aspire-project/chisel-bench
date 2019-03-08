@@ -5,12 +5,12 @@ export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BENCHMARK_NAME
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
 export REDUCED_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.reduced
-export TIMEOUT=2
+export TIMEOUT="-k 2 2"
 export LOG=$BENCHMARK_DIR/log.txt
 
 source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
 
-TIMEOUT_LOW="timeout 0.4"
+TIMEOUT_LOW="timeout -k 0.4 0.4"
 
 function clean() {
   chmod 777 -Rf f* b*
