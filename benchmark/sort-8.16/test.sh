@@ -1,12 +1,14 @@
 #!/bin/bash
 
-export BENCHMARK_NAME=sort-8.16.c
+export BENCHMARK_NAME=sort-8.16
 export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BENCHMARK_NAME
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
 export REDUCED_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.reduced
 export TIMEOUT="-k 0.8 0.8"
 export LOG=$BENCHMARK_DIR/log.txt
+
+source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
 
 export BENCHMARK_CFLAGS="-lpthread"
 
@@ -127,3 +129,5 @@ function undesired() {
   done
   return 0
 }
+
+main
