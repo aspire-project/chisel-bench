@@ -18,13 +18,13 @@ function clean() {
 }
 
 function run() {
-  timeout 0.4 $REDUCED_BIN $1 $input >&$LOG || exit 1
+  timeout -k 0.4 0.4 $REDUCED_BIN $1 $input >&$LOG || exit 1
   $ORIGIN_BIN $1 $input >&temp2
   diff -q $LOG temp2 || exit 1
 }
 
 function run_disaster() {
-  timeout 0.5 $REDUCED_BIN $1 $input >&$LOG
+  timeout -k 0.5 0.5 $REDUCED_BIN $1 $input >&$LOG
   cat $LOG | grep -E -q "$2" || exit 1
 }
 
@@ -81,23 +81,23 @@ function outputcheckerror() {
 OPT=("-b" "-d" "-f" "-g" "-i" "-M" "-h" "-n" "-V" "-c" "-C"
   "-k" "-m" "-o" "-S" "-t" "-T" "--help")
 function undesired() {
-  { timeout 0.1 $REDUCED_BIN; } >&$LOG
+  { timeout -k 0.1 0.1 $REDUCED_BIN; } >&$LOG
   infinite $? || exit 1
   export srcdir=$BENCHMARK_HOME/tests
   export PATH="$(pwd):$PATH"
   touch file
   for opt in ${OPT[@]}; do
     if [[ $opt == '-o' || $opt == '-T' ]]; then
-      { timeout 0.1 $REDUCED_BIN $opt file; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt file; } >&$LOG
       infinite $? || exit 1
     else
-      { timeout 0.5 $REDUCED_BIN $opt file; } >&$LOG
+      { timeout -k 0.5 0.5 $REDUCED_BIN $opt file; } >&$LOG
     fi
     crash $? && exit 1
   done
   for opt in ${OPT[@]}; do
     if [[ $opt == "-k" ]]; then
-      { timeout 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
       err=$?
       outputcheckerror "invalid number at field start: invalid count at start of \‘notexist\’" && exit 1
       crash $err && exit 1
@@ -107,24 +107,24 @@ function undesired() {
       err=$?
       crash $err && exit 1
     elif [[ $opt == '-S' ]]; then
-      { timeout 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
       err=$?
       outputcheckerror "invalid -S argument 'notexist'" && exit 1
       crash $err && exit 1
     elif [[ $opt == '-t' ]]; then
-      { timeout 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
       err=$?
       outputcheckerror "multi-character tab \‘notexist\’" && exit 1
       crash $err && exit 1
     else
-      { timeout 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
       err=$?
       outputcheckerror "open failed: notexist: No such file or directory" && exit 1
       crash $err && exit 1
     fi
   done
   for t in $(find tests/ -maxdepth 1 -perm -100 -type f); do
-    { timeout 1 $t; } >&$LOG
+    { timeout -k 1 1 $t; } >&$LOG
     crash $? && exit 1
   done
   return 0
