@@ -1,7 +1,19 @@
 *.o
 
 chisel-out
+log.txt
 
 benchmark/lib/*.a
+*.origin
+*.reduced
 
 benchmark/bzip2-1.0.5/bzip2-1.0.5.c
+benchmark/chown-8.2/chown-8.2.c
+benchmark/date-8.21/date-8.21.c
+benchmark/grep-2.19/grep-2.19.c
+benchmark/gzip-1.2.4/gzip-1.2.4.c
+benchmark/mkdir-5.2.1/mkdir-5.2.1.c
+benchmark/rm-8.4/rm-8.4.c
+benchmark/sort-8.16/sort-8.16.c
+benchmark/tar-1.14/tar-1.14.c
+benchmark/uniq-8.16/uniq-8.16.c
