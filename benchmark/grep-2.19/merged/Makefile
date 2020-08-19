@@ -5,4 +5,4 @@ ORACLE=test.sh
 CFLAGS="-D __msan_unpoison(s,z)"
 LFLAGS="-lpcre"
 
-include ../target.mk
+include ../../target.mk

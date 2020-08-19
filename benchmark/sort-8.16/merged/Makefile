@@ -4,4 +4,4 @@ SRC=$(NAME).c
 ORACLE=test.sh
 LFLAGS=-lpthread
 
-include ../target.mk
+include ../../target.mk

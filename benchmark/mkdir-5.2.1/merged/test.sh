@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export BENCHMARK_NAME=mkdir-5.2.1
-export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BENCHMARK_NAME
+export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BENCHMARK_NAME/merged
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
 export REDUCED_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.reduced
@@ -34,7 +34,7 @@ function run_error() {
   rm -rf d1 >&/dev/null
   { timeout $TIMEOUT $REDUCED_BIN $1 $2; } >&temp1 && exit 1
   rm -rf d1 >&/dev/null
-  { $ORIGIN_BIN $1 $2; }>&temp2
+  { $ORIGIN_BIN $1 $2; } >&temp2
   temp1=$(head -n 1 temp1 | cut -d ' ' -f 2,3)
   temp2=$(head -n 1 temp2 | cut -d ' ' -f 2,3)
   if [[ $temp1 == $temp2 ]]; then
