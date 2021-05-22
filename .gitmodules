@@ -1,3 +1,15 @@
 [submodule "gnulib"]
 	path = gnulib
 	url = https://github.com/coreutils/gnulib.git
+[submodule "benchmark/pdb_cut"]
+	path = benchmark/pdb_cut
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_wc"]
+	path = benchmark/pdb_wc
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_head"]
+	path = benchmark/pdb_head
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_ls"]
+	path = benchmark/pdb_ls
+	url = https://github.com/coreutils/coreutils.git
