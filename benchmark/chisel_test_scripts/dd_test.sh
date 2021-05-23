@@ -1,14 +1,15 @@
 #!/bin/bash
-
-export BENCHMARK_NAME=head
-export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BENCHMARK_NAME
+export BENCHMARK_NAME=dd
+export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/pdb_$BENCHMARK_NAME
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
-export ORIGIN_BIN=head #$BENCHMARK_DIR/$BENCHMARK_NAME.origin
-export REDUCED_BIN=head #$BENCHMARK_DIR/$BENCHMARK_NAME.reduced
-export TIMEOUT="-k 0.5 0.5"
+export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
+export REDUCED_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.reduced
+export TIMEOUT="-k 1 1"
 export LOG=$BENCHMARK_DIR/log.txt
+export TESTENV=$BENCHMARK_DIR/testenv
+export COREUTILS_DIR=$BENCHMARK_DIR
 
-# source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
+source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
 
 function clean() {
   # TODO
