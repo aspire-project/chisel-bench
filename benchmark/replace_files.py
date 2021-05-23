@@ -2,16 +2,16 @@ import os
 import sys
 from shutil import copyfile
 
-def replace_file(file, og_file, suffix):
+def replace_file(file, og_file):
     try:
-        copyfile(og_file, f'{og_file}{suffix}')
-        os.rename(file, og_file)
+        copyfile(file, og_file)
     except:
-        pass
+        print(f'Error while replacing {file}')
+        exit(1)
 
-def replace_all_files(files, og_files, suffix):
+def replace_all_files(files, og_files):
     for file, og_file in zip(files, og_files):
-        replace_file(file, og_file, suffix)
+        replace_file(file, og_file)
         
 def get_files_with(tldir, match):
     files = []
@@ -20,15 +20,16 @@ def get_files_with(tldir, match):
     return list(filter(lambda f: match in f, files))
 
 def main():
-    if len(sys.argv) != 5:
-        print("usage replace_files.py <dir> <suffix-before> <suffix-after> <suffix-collision>")
+    original_suffix = '.c.origin.c'
+    reduced_suffix = '.c.reduced.c'
+    if len(sys.argv) != 3:
+        print("usage replace_files.py <dir> <original|reduced>")
         exit(1)
     tldir = sys.argv[1]
-    before = sys.argv[2] #'.c.chisel.c'
-    after = sys.argv[3] #'.c'
-    collision_suffix = sys.argv[4] #'.og'
+    before = reduced_suffix if sys.argv[2] is 'reduced' else original_suffix
+    after = '.c'
     files = get_files_with(tldir, before)
     og_files = list(map(lambda f: f.replace(before, after), files))
-    replace_all_files(files, og_files, collision_suffix)
+    replace_all_files(files, og_files)
 
 main()

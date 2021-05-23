@@ -35,9 +35,7 @@ environment_libs=("-L$CHISEL_BENCHMARK_HOME/benchmark/lib -lmemwrap"
 function main() {
   for ((i = 0; i < ${#sanitizers[@]}; i++)); do
     clean
-    echo "compiling"
     compile "${sanitizers[$i]}" || exit 1
-    echo "compiled"
     desired "${sanitizers[$i]}" || exit 1
     undesired || exit 1
     clean
