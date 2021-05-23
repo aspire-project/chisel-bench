@@ -13,3 +13,18 @@
 [submodule "benchmark/pdb_ls"]
 	path = benchmark/pdb_ls
 	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_bzip2"]
+	path = benchmark/pdb_bzip2
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_sort"]
+	path = benchmark/pdb_sort
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_uniq"]
+	path = benchmark/pdb_uniq
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_mkdir"]
+	path = benchmark/pdb_mkdir
+	url = https://github.com/coreutils/coreutils.git
+[submodule "benchmark/pdb_chown"]
+	path = benchmark/pdb_chown
+	url = https://github.com/coreutils/coreutils.git
