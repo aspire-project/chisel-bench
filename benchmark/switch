@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 import sys
 from shutil import copyfile
@@ -21,12 +22,12 @@ def get_files_with(tldir, match):
 
 def main():
     original_suffix = '.c.origin.c'
-    reduced_suffix = '.c.reduced.c'
+    reduced_suffix = '.c.chisel.c'
     if len(sys.argv) != 3:
         print("usage replace_files.py <dir> <original|reduced>")
         exit(1)
     tldir = sys.argv[1]
-    before = reduced_suffix if sys.argv[2] is 'reduced' else original_suffix
+    before = reduced_suffix if sys.argv[2] == 'reduced' else original_suffix
     after = '.c'
     files = get_files_with(tldir, before)
     og_files = list(map(lambda f: f.replace(before, after), files))
