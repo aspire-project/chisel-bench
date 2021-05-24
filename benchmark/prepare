@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ ! -f configure ]; then
+    ./bootstrap && ./configure
+elif [ ! -f Makefile ]; then
+    ./configure
+fi
+
+. initenv

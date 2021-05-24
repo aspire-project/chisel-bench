@@ -7,6 +7,6 @@ lib:
     
 reduce: lib
 	make CFLAGS=-Wno-error
-	. setenv
+	../prepare
 	cp src/$(NAME) ./$(NAME).origin
 	chisel --build ./$(ORACLE) -- make src/$(NAME)
