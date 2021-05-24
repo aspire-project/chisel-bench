@@ -1,4 +1,4 @@
-ORACLE=test.sh    
+ORACLE=test.sh
 
 all: lib
     
@@ -7,6 +7,6 @@ lib:
     
 reduce: lib
 	make CFLAGS=-Wno-error
-	../prepare
+	. ../prepare
 	cp src/$(NAME) ./$(NAME).origin
 	chisel --build ./$(ORACLE) -- make src/$(NAME)

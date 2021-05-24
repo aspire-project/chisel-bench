@@ -6,4 +6,8 @@ elif [ ! -f Makefile ]; then
     ./configure
 fi
 
-. initenv
+# extract coreutil name from directory name
+NAME=`echo $(basename $(pwd)) | sed 's/pdb_//g'`
+
+# copy oracle file into this dir
+cp ../chisel_files/$NAME.sh ./test.sh
