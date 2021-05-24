@@ -1,5 +1,5 @@
 #!/bin/bash
-export BENCHMARK_NAME=head
+export BENCHMARK_NAME=wc
 export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/pdb_$BENCHMARK_NAME
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
@@ -21,28 +21,22 @@ function test(){
   diff -q \
     <(cat $FILE | $ORIGIN_BIN $FLAGS) \
     <(cat $FILE | $REDUCED_BIN $FLAGS) \
-    >&/dev/null || return 1
-  
+    >& /dev/null || return 1
   return 0
 }
 
-function test_no_flag(){
-  test "$FILE" "" || return 1
-  return 0
-}
-
-function test_flag_n(){
-  FILE=$1
-  ARG_VALS=$2
-  for n in $ARG_VALS; do
-    test "$FILE" "-$n" || return 1
-  done
+function create_test_env() {
+  echo -ne "this is a line\nthis is a line\nthis is a line\nthis is a line\n" > testfile
+  echo "testfile"
   return 0
 }
 
 function desired() {
-  test_no_flag  "testfile"  ""      || return 1
-  test_flag_n   "testfile"  "1 5"   || return 1
+  DEFUALT_TEST_FILE=`create_test_env`
+  test "$DEFUALT_TEST_FILE" ""    || return 1
+  test "$DEFUALT_TEST_FILE" "-c"  || return 1
+  test "$DEFUALT_TEST_FILE" "-l"  || return 1
+  test "$DEFUALT_TEST_FILE" "-w"  || return 1
   return 0
 }
 
