@@ -15,11 +15,11 @@ function crash() {
 }
 
 function compile() {
-  case $COV in
-  1) CFLAGS="-w -fprofile-arcs -ftest-coverage --coverage $BENCHMARK_CFLAGS" ;;
-  *) CFLAGS="-w $1 $BENCHMARK_CFLAGS" ;;
-  esac
-  $CC $SRC $CFLAGS -o $REDUCED_BIN >&/dev/null || exit 1
+  cd $BENCHMARK_DIR
+  make src/$BENCHMARK_NAME >& /dev/null || exit 1
+  cp src/$BENCHMARK_NAME $REDUCED_BIN
+  # make clean
+  cd - >& /dev/null
   return 0
 }
 
@@ -40,10 +40,10 @@ function main() {
     undesired || exit 1
     clean
   done
-  for ((i = 0; i < ${#environments[@]}; i++)); do
-    clean
-    compile "${environment_libs[$i]}" || exit 1
-    desired_disaster "${environments[$i]}" || exit 1
-    clean
-  done
+#  for ((i = 0; i < ${#environments[@]}; i++)); do
+#    clean
+#    compile "${environment_libs[$i]}" || exit 1
+#    desired_disaster "${environments[$i]}" || exit 1
+#    clean
+#  done
 }

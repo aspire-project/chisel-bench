@@ -9,7 +9,7 @@ export LOG=$BENCHMARK_DIR/log.txt
 export TESTENV=$BENCHMARK_DIR/testenv
 export COREUTILS_DIR=$BENCHMARK_DIR
 
-source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
+source $CHISEL_BENCHMARK_HOME/benchmark/test-base-make.sh
 
 function clean() {
   # TODO
