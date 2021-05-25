@@ -6,7 +6,7 @@ lib:
 	make -C $(CHISEL_BENCHMARK_HOME)/benchmark/lib    
     
 reduce: lib
-	make CFLAGS=-Wno-error
 	. ../prepare
+	make CFLAGS=-Wno-error
 	cp src/$(NAME) ./$(NAME).origin
 	chisel --build ./$(ORACLE) -- make src/$(NAME)

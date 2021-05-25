@@ -1,30 +1,30 @@
 [submodule "gnulib"]
 	path = gnulib
 	url = https://github.com/coreutils/gnulib.git
-[submodule "benchmark/pdb_cut"]
-	path = benchmark/pdb_cut
+[submodule "benchmark/bsysi_cut"]
+	path = benchmark/bsysi_cut
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_wc"]
-	path = benchmark/pdb_wc
+[submodule "benchmark/bsysi_wc"]
+	path = benchmark/bsysi_wc
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_head"]
-	path = benchmark/pdb_head
+[submodule "benchmark/bsysi_head"]
+	path = benchmark/bsysi_head
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_ls"]
-	path = benchmark/pdb_ls
+[submodule "benchmark/bsysi_ls"]
+	path = benchmark/bsysi_ls
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_bzip2"]
-	path = benchmark/pdb_bzip2
+[submodule "benchmark/bsysi_bzip2"]
+	path = benchmark/bsysi_bzip2
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_sort"]
-	path = benchmark/pdb_sort
+[submodule "benchmark/bsysi_sort"]
+	path = benchmark/bsysi_sort
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_uniq"]
-	path = benchmark/pdb_uniq
+[submodule "benchmark/bsysi_uniq"]
+	path = benchmark/bsysi_uniq
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_mkdir"]
-	path = benchmark/pdb_mkdir
+[submodule "benchmark/bsysi_mkdir"]
+	path = benchmark/bsysi_mkdir
 	url = https://github.com/coreutils/coreutils.git
-[submodule "benchmark/pdb_chown"]
-	path = benchmark/pdb_chown
+[submodule "benchmark/bsysi_chown"]
+	path = benchmark/bsysi_chown
 	url = https://github.com/coreutils/coreutils.git

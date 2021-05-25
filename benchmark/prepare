@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [ ! -f configure ]; then
+if [ ! -f bootstrap ]; then
+    git submodule update --init . && ./bootstrap && ./configure
+elif [ ! -f configure ]; then
     ./bootstrap && ./configure
 elif [ ! -f Makefile ]; then
     ./configure
 fi
 
-# extract coreutil name from directory name
-NAME=`echo $(basename $(pwd)) | sed 's/pdb_//g'`
 
 # copy oracle file into this dir
 cp ../chisel_files/$NAME.sh ./test.sh
