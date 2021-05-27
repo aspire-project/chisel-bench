@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf .* *
 
 if [ ! -f bootstrap ]; then
     git submodule update --init . && ./bootstrap && ./configure
