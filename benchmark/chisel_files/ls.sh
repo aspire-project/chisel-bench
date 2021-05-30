@@ -39,7 +39,7 @@ function create_test_env(){
 
 function desired() {
   create_test_env
-  test ""    || return 1
+  test "."    || return 1
   test "$TESTENV" "-l"  || return 1
   test "$TESTENV" "-S"  || return 1
   test "$TESTENV" "-R"  || return 1

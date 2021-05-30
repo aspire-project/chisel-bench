@@ -17,3 +17,4 @@ benchmark/rm-8.4/merged/rm-8.4.c
 benchmark/sort-8.16/merged/sort-8.16.c
 benchmark/tar-1.14/merged/tar-1.14.c
 benchmark/uniq-8.16/merged/uniq-8.16.c
+benchmark/uniq-8.16/merged/test_pdb.sh
