@@ -27,28 +27,28 @@ function printlog(){
 
 # $1 : option, $2 : file for reduced, $3 : file for original
 function run() {
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; }  | cut -d" " -f1  >&$LOG || return 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; }  | cut -d" " -f1,6,8  >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):sudo $3 | cut -d" " -f1 >&log2
+  $ORIGIN_BIN $1 $(whoami):sudo $3 | cut -d" " -f1,6,8 >&log2
   ls -al $3 | cut -d ' ' -f 4 >temp2
   printlog
-  diff -q temp1 temp2 >&/dev/null || return 1
-  diff -q $LOG log2 >&/dev/null || return 2
+  diff -q temp1 temp2 >&/dev/null || exit 1
+  diff -q $LOG log2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; }  | cut -d" " -f1 >&$LOG || return 3
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; }  | cut -d" " -f1,6,8 >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  | cut -d" " -f1  >&log2
+  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  | cut -d" " -f1,6,8  >&log2
   ls -al $3 | cut -d ' ' -f 4 >temp2
   printlog
-  diff -q temp1 temp2 >&/dev/null || return 4
-  diff -q $LOG log2 >&/dev/null || return 5
+  diff -q temp1 temp2 >&/dev/null || exit 1
+  diff -q $LOG log2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } | cut -d" " -f1 >&$LOG || return 6
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } | cut -d" " -f1,6,8 >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  | cut -d" " -f1  >&log2
+  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  | cut -d" " -f1,6,8  >&log2
   ls -al $3 | cut -d ' ' -f 4 >temp2
   printlog
-  diff -q $LOG log2 >&/dev/null || return 7
+  diff -q $LOG log2 >&/dev/null || exit 1
 
   return 0
 }

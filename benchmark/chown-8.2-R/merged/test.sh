@@ -20,17 +20,17 @@ function clean() {
 
 # $1 : option, $2 : file for reduced, $3 : file for original
 function run() {
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; } >&$LOG || return 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; } >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
   $ORIGIN_BIN $1 $(whoami):sudo $3 >&/dev/null
   ls -al $3 | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || return 1
+  diff -q temp1 temp2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } >&$LOG || return 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
   $ORIGIN_BIN $1 $(whoami):$(whoami) $3 >&/dev/null
   ls -al $3 | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || return 1
+  diff -q temp1 temp2 >&/dev/null || exit 1
   return 0
 }
 
@@ -40,10 +40,10 @@ function desired() {
   touch d1/d1/d1/file
   mkdir -p d2/d2/d2
   touch d2/d2/d2/file
-  run "-R" d1 d2 || return 1
+  run "-R" d1 d2 || exit 1
   ls -al d1/d1/d1/file | cut -d ' ' -f 4 >temp1
   ls -al d2/d2/d2/file | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || return 1
+  diff -q temp1 temp2 >&/dev/null || exit 1
   rm -rf d1 d2
 
   return 0
