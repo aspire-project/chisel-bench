@@ -21,7 +21,7 @@ function clean() {
 function run() {
   timeout -k 0.4 0.4 $REDUCED_BIN $1 $input >&$LOG || exit 1
   $ORIGIN_BIN $1 $input >&temp2
-  diff -q <(cat $LOG | cut -d: -f4) <(cat temp2 | cut -d: -f4) || exit 1
+  diff -q $LOG temp2 || exit 1
 }
 
 function run_disaster() {
