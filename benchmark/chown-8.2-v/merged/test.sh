@@ -19,23 +19,23 @@ function clean() {
 
 # $1 : option, $2 : file for reduced, $3 : file for original
 function run() {
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; }  | cut -d" " -f1,6,8  >&$LOG || exit 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; }  2>&1 | cut -d" " -f1,6,8  >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):sudo $3 | cut -d" " -f1,6,8 >&log2
+  $ORIGIN_BIN $1 $(whoami):sudo $3 2>&1 | cut -d" " -f1,6,8 >&log2
   ls -al $3 | cut -d ' ' -f 4 >temp2
   diff -q temp1 temp2 >&/dev/null || exit 1
   diff -q $LOG log2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; }  | cut -d" " -f1,6,8 >&$LOG || exit 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; }  2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  | cut -d" " -f1,6,8  >&log2
+  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  2>&1 | cut -d" " -f1,6,8  >&log2
   ls -al $3 | cut -d ' ' -f 4 >temp2
   diff -q temp1 temp2 >&/dev/null || exit 1
   diff -q $LOG log2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } | cut -d" " -f1,6,8 >&$LOG || exit 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } 2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
   ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  | cut -d" " -f1,6,8  >&log2
+  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  2>&1 | cut -d" " -f1,6,8  >&log2
   ls -al $3 | cut -d ' ' -f 4 >temp2
   
   diff -q $LOG log2 >&/dev/null || exit 1
