@@ -10,7 +10,7 @@ export TIMEOUT="-k 0.1 0.1"
 export LOG=$BENCHMARK_DIR/log.txt
 
 
-# source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
+source $CHISEL_BENCHMARK_HOME/benchmark/test-base.sh
 
 function clean() {
   rm -rf $LOG $REDUCED_BIN d1 temp temp1 temp2 file log symfile1 symfile2
@@ -161,4 +161,4 @@ function undesired() {
   return 0
 }
 
-# main
+main
