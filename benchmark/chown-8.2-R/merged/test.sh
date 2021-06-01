@@ -69,27 +69,6 @@ function desired_disaster() {
     return 1
     ;;
   esac
-  touch file1
-  touch file2
-  run_disaster "" file1 file2 "$MESSAGE" || exit 1
-  rm -rf file1 file2
-
-  mkdir -p d1/d1/d1
-  touch d1/d1/d1/file
-  mkdir -p d2/d2/d2
-  touch d2/d2/d2/file
-  run_disaster "" d1/d1/d1/file d2/d2/d2/file "$MESSAGE" || exit 1
-  rm -rf d1 d2
-
-  mkdir -p d1/d1/d1
-  touch d1/d1/d1/file
-  mkdir -p d2/d2/d2
-  touch d2/d2/d2/file
-  run_disaster "" d1 d2 "$MESSAGE" || exit 1
-  ls -al d1/d1/d1/file | cut -d ' ' -f 4 >temp1
-  ls -al d2/d2/d2/file | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || exit 1
-  rm -rf d1 d2
 
   mkdir -p d1/d1/d1
   touch d1/d1/d1/file
@@ -100,27 +79,6 @@ function desired_disaster() {
   ls -al d2/d2/d2/file | cut -d ' ' -f 4 >temp2
   diff -q temp1 temp2 >&/dev/null || exit 1
   rm -rf d1 d2
-
-  touch file1
-  touch file2
-  ln -s file1 symfile1
-  ln -s file2 symfile2
-  run_disaster "-h" file1 file2 "$MESSAGE" || exit 1
-  rm -rf file1 file2 symfile1 symfile2
-
-  touch file1
-  touch file2
-  ln -s file1 symfile1
-  ln -s file2 symfile2
-  run_disaster "-h" symfile1 symfile2 "$MESSAGE" || exit 1
-  rm -rf file1 file2 symfile1 symfile2
-
-  touch file1
-  touch file2
-  ln -s file1 symfile1
-  ln -s file2 symfile2
-  run_disaster "" symfile1 symfile2 "$MESSAGE" || exit 1
-  rm -rf file1 file2 symfile1 symfile2
 
   return 0
 }
