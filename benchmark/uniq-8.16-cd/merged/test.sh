@@ -18,12 +18,13 @@ function clean() {
 
 # $1: option
 function desired_run() {
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } 2>&1 || exit 1)
-  temp2=$({ $ORIGIN_BIN $1 data.txt; } 2>&1)
-  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 input; } 2>&1 || exit 1)
-  temp2=$({ $ORIGIN_BIN $1 input; })
-  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
+  ./test_correctness || exit 1
+  # temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } 2>&1 || exit 1)
+  # temp2=$({ $ORIGIN_BIN $1 data.txt; } 2>&1)
+  # diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
+  # temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 input; } 2>&1 || exit 1)
+  # temp2=$({ $ORIGIN_BIN $1 input; })
+  # diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
   return 0
 }
 
