@@ -18,7 +18,7 @@ function clean() {
 
 # $1: option
 function desired_run() {
-  ./test_correctness || exit 1
+  $BENCHMARK_DIR/test_correctness || exit 1
   # temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } 2>&1 || exit 1)
   # temp2=$({ $ORIGIN_BIN $1 data.txt; } 2>&1)
   # diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
