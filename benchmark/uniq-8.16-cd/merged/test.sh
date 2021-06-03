@@ -18,20 +18,22 @@ function clean() {
 
 # $1: option
 function desired_run() {
-  $BENCHMARK_DIR/test_correctness || exit 1
-  # temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } 2>&1 || exit 1)
-  # temp2=$({ $ORIGIN_BIN $1 data.txt; } 2>&1)
-  # diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
-  # temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 input; } 2>&1 || exit 1)
-  # temp2=$({ $ORIGIN_BIN $1 input; })
-  # diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
+  opts=$1
+  file=$2
+  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 || exit 1)
+  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1)
+  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
   return 0
 }
 
 function desired() {
-  desired_run "-cd" || exit 1
+  for file in $(ls test/*); do
+    desired_run "-cd" $file || exit 1
+  done
   return 0
 }
+
+desired
 
 function desired_disaster_run() {
   { timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } >&$LOG
@@ -51,14 +53,7 @@ function desired_disaster() {
     return 1
     ;;
   esac
-  desired_disaster_run "" "$MESSAGE" || exit 1
-  desired_disaster_run "-c" "$MESSAGE" || exit 1
-  desired_disaster_run "-d" "$MESSAGE" || exit 1
-  desired_disaster_run "-u" "$MESSAGE" || exit 1
-  desired_disaster_run "-i" "$MESSAGE" || exit 1
-  desired_disaster_run "-f 5" "$MESSAGE" || exit 1
-  desired_disaster_run "-s 10" "$MESSAGE" || exit 1
-  desired_disaster_run "-w 10" "$MESSAGE" || exit 1
+  desired_disaster_run "-cd" "$MESSAGE" || exit 1
   return 0
 }
 
