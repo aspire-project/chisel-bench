@@ -33,8 +33,6 @@ function desired() {
   return 0
 }
 
-desired
-
 function desired_disaster_run() {
   { timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } >&$LOG
   grep -E -q "$2" $LOG || exit 1
