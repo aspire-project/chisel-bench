@@ -28,7 +28,7 @@ function desired_run() {
 
 function desired() {
   for file in $(ls test/*); do
-    desired_run "-cdw -8" $file || exit 1
+    desired_run "-cdw 8" $file || exit 1
   done
   return 0
 }
@@ -51,7 +51,7 @@ function desired_disaster() {
     return 1
     ;;
   esac
-  desired_disaster_run "-cdw 5" "$MESSAGE" || exit 1
+  desired_disaster_run "-cdw 8" "$MESSAGE" || exit 1
   return 0
 }
 
