@@ -18,17 +18,18 @@ function clean() {
 
 # $1: option
 function desired_run() {
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 data.txt; } 2>&1 || exit 1)
-  temp2=$({ $ORIGIN_BIN $1 data.txt; } 2>&1)
-  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $1 input; } 2>&1 || exit 1)
-  temp2=$({ $ORIGIN_BIN $1 input; })
+  opts=$1
+  file=$2
+  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 || exit 1)
+  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1)
   diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
   return 0
 }
 
 function desired() {
-  desired_run "-w 8" || exit 1
+  for file in $(ls test/*); do
+    desired_run "-w 8" $file || exit 1
+  done
   return 0
 }
 
