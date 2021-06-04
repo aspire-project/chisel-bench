@@ -16,52 +16,56 @@ function clean() {
   rm -rf cu-*
   return 0
 }
+# $1 : option, $2 : file for reduced, $3 : file for original, $4 : usergroup specification
+function test_automate_0() {
 
-function printlog(){
-  # cat $LOG
-  # echo "-----"
-  # cat log2
-  # echo "====="
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$6 $2; }  2>&1 | cut -d" " -f1,6,8  >&$LOG || exit 1
+  ls -al $4 | cut -d ' ' -f 3,4 >temp1
+  $ORIGIN_BIN $1 $(whoami):$6 $3 2>&1 | cut -d" " -f1,6,8 >&log2
+  ls -al $5 | cut -d ' ' -f 3,4 >temp2
+  diff -q temp1 temp2 >&/dev/null || exit 1
+  diff -q $LOG log2 >&/dev/null || exit 1
   return 0
+
 }
 
-# $1 : option, $2 : file for reduced, $3 : file for original
+function test_automate_1() {
+
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami) $2; }  2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
+  ls -al $4 | cut -d ' ' -f 3,4 >temp1
+  $ORIGIN_BIN $1 $(whoami) $3  2>&1 | cut -d" " -f1,6,8  >&log2
+  ls -al $5 | cut -d ' ' -f 3,4 >temp2
+  diff -q temp1 temp2 >&/dev/null || exit 1
+  diff -q $LOG log2 >&/dev/null || exit 1
+  return 0
+
+}
+
 function run() {
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; }  2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
-  ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):sudo $3 2>&1 | cut -d" " -f1,6,8 >&log2
-  ls -al $3 | cut -d ' ' -f 4 >temp2
-  printlog
-  diff -q temp1 temp2 >&/dev/null || exit 1
-  diff -q $LOG log2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; }  2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
-  ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  2>&1 | cut -d" " -f1,6,8  >&log2
-  ls -al $3 | cut -d ' ' -f 4 >temp2
-  printlog
-  diff -q temp1 temp2 >&/dev/null || exit 1
-  diff -q $LOG log2 >&/dev/null || exit 1
+  
+  test_automate_0 $1 $2 $3 $4 $5 sudo || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 sudo || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } 2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
-  ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3  2>&1 | cut -d" " -f1,6,8  >&log2
-  ls -al $3 | cut -d ' ' -f 4 >temp2
-  printlog
-  diff -q $LOG log2 >&/dev/null || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 $(whoami) || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 $(whoami) || exit 1
+
+  test_automate_1 $1 $2 $3 $4 $5 || exit 1
+  test_automate_1 $1 $2 $3 $4 $5 || exit 1
 
   return 0
 }
 
 function desired() {
+  rm -rf file1 file2 >& /dev/null
+  
   mkdir -p d1/d1/d1
   touch d1/d1/d1/file
   mkdir -p d2/d2/d2
   touch d2/d2/d2/file
-  run "-Rv" d1 d2 || exit 1
-  ls -al d1/d1/d1/file | cut -d ' ' -f 4 >temp1
-  ls -al d2/d2/d2/file | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || exit 1
+ 
+  run "-Rv" d1 d2 d1/d1/d1/file d2/d2/d2/file || exit 1
+  
   rm -rf d1 d2
 
   return 0
@@ -87,14 +91,15 @@ function desired_disaster() {
     return 1
     ;;
   esac
-
+  rm -rf file1 file2 >& /dev/null
   mkdir -p d1/d1/d1
   touch d1/d1/d1/file
   mkdir -p d2/d2/d2
   touch d2/d2/d2/file
   run_disaster "-Rv" d1 d2 "$MESSAGE" || exit 1
-  ls -al d1/d1/d1/file | cut -d ' ' -f 4 >temp1
-  ls -al d2/d2/d2/file | cut -d ' ' -f 4 >temp2
+  ls -al d1/d1/d1/file | cut -d ' ' -f 3,4 > temp1
+  ls -al d2/d2/d2/file | cut -d ' ' -f 3,4 > temp2
+  
   diff -q temp1 temp2 >&/dev/null || exit 1
   rm -rf d1 d2
 
@@ -109,7 +114,7 @@ function outputcheck() {
   return 0
 }
 
-OPT=("" "-c" "-f" "-H" "-L" "-P")
+OPT=("" "-c" "-f" "-H" "-L" "-P" "-v")
 function undesired() {
   { timeout 0.5 $REDUCED_BIN; } >&$LOG
   err=$?

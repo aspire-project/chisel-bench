@@ -16,29 +16,42 @@ function clean() {
   rm -rf cu-*
   return 0
 }
+# $1 : option, $2 : file for reduced, $3 : file for original, $4 : usergroup specification
+function test_automate_0() {
 
-# $1 : option, $2 : file for reduced, $3 : file for original
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$4 $2; }  2>&1 | cut -d" " -f1,6,8  >&$LOG || exit 1
+  ls -al $2 | cut -d ' ' -f 3,4 >temp1
+  $ORIGIN_BIN $1 $(whoami):$4 $3 2>&1 | cut -d" " -f1,6,8 >&log2
+  ls -al $3 | cut -d ' ' -f 3,4 >temp2
+  diff -q temp1 temp2 >&/dev/null || exit 1
+  diff -q $LOG log2 >&/dev/null || exit 1
+  return 0
+
+}
+
+function test_automate_1() {
+
+  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami) $2; }  2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
+  ls -al $2 | cut -d ' ' -f 3,4 >temp1
+  $ORIGIN_BIN $1 $(whoami) $3  2>&1 | cut -d" " -f1,6,8  >&log2
+  ls -al $3 | cut -d ' ' -f 3,4 >temp2
+  diff -q temp1 temp2 >&/dev/null || exit 1
+  diff -q $LOG log2 >&/dev/null || exit 1
+  return 0
+
+}
+
 function run() {
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):sudo $2; } 2>&1 | cut -d" " -f1,6,8  >&$LOG || exit 1
-  ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):sudo $3 2>&1 | cut -d" " -f1,6,8 >&log2
-  ls -al $3 | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || exit 1
-  diff -q $LOG log2 >&/dev/null || exit 1
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } 2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
-  ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3 2>&1 | cut -d" " -f1,6,8  >&log2
-  ls -al $3 | cut -d ' ' -f 4 >temp2
-  diff -q temp1 temp2 >&/dev/null || exit 1
-  diff -q $LOG log2 >&/dev/null || exit 1
-
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$(whoami) $2; } 2>&1 | cut -d" " -f1,6,8 >&$LOG || exit 1
-  ls -al $2 | cut -d ' ' -f 4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$(whoami) $3 2>&1 | cut -d" " -f1,6,8  >&log2
-  ls -al $3 | cut -d ' ' -f 4 >temp2
   
-  diff -q $LOG log2 >&/dev/null || exit 1
+  test_automate_0 $1 $2 $3 sudo || exit 1
+  test_automate_0 $1 $2 $3 sudo || exit 1
+
+  test_automate_0 $1 $2 $3 $(whoami) || exit 1
+  test_automate_0 $1 $2 $3 $(whoami) || exit 1
+
+  test_automate_1 $1 $2 $3 || exit 1
+  test_automate_1 $1 $2 $3 || exit 1
 
   return 0
 }
@@ -47,7 +60,7 @@ function desired() {
   rm -rf file1 file2 >& /dev/null
   touch file1
   touch file2
-  run "-c" file1 file2 || return $?
+  run "-c" file1 file2 || exit 1
   rm -rf file1 file2
 
   return 0
@@ -90,7 +103,7 @@ function outputcheck() {
   return 0
 }
 
-OPT=("" "-f" "-v" "-H" "-L" "-P" "-R")
+OPT=("" "-v" "-f" "-H" "-L" "-P" "-R")
 function undesired() {
   { timeout 0.5 $REDUCED_BIN; } >&$LOG
   err=$?
