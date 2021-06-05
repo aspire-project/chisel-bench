@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export BENCHMARK_NAME=sort-8.16
-export BIN_NAME=sort-8.16-c
+export BIN_NAME=sort-8.16-cfn
 export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BIN_NAME/merged
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
@@ -18,10 +18,20 @@ function clean() {
   return 0
 }
 
+function conditional_exit(){
+  if [[ $1 -eq 0 || $1 -eq 1 ]]; then
+     return 0
+  else
+     return 1
+  fi
+}
+
 function run() {
-  timeout -k 0.4 0.4 $REDUCED_BIN $1 $input >&$LOG || exit 1
+  timeout $TIMEOUT $REDUCED_BIN $1 $input >&$LOG
+  conditional_exit $? || exit 1
   $ORIGIN_BIN $1 $input >&temp2
-  diff -q $LOG temp2 || exit 1
+  diff -q <(cat $LOG | cut -d: -f4) <(cat temp2 | cut -d: -f4) || exit 1
+  grep -q "(null)" $LOG && exit 1
 }
 
 function run_disaster() {
@@ -30,8 +40,8 @@ function run_disaster() {
 }
 
 function desired() {
-  for input in $(ls input/*); do
-    run "-c" || exit 1
+  for input in $(ls test/*); do
+    run "-cfn" || exit 1
   done
   return 0
 }
@@ -48,8 +58,8 @@ function desired_disaster() {
     return 1
     ;;
   esac
-  for input in $(ls input/*); do
-    run_disaster "-c" "$MESSAGE" || exit 1
+  for input in $(ls test/*); do
+    run_disaster "-cfn" "$MESSAGE" || exit 1
   done
   return 0
 }

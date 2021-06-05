@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export BENCHMARK_NAME=sort-8.16
-export BIN_NAME=sort-8.16-c
+export BIN_NAME=sort-8.16-r
 export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BIN_NAME/merged
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
@@ -18,22 +18,25 @@ function clean() {
   return 0
 }
 
-function run() {
-  timeout -k 0.4 0.4 $REDUCED_BIN $1 $input >&$LOG || exit 1
-  $ORIGIN_BIN $1 $input >&temp2
-  diff -q $LOG temp2 || exit 1
+function desired_run() {
+  opts=$1
+  file=$2
+  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 || exit 1)
+  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1)
+  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
+  return 0
+}
+
+function desired() {
+  for file in $(ls test/*); do
+    desired_run "-r" $file || exit 1
+  done
+  return 0
 }
 
 function run_disaster() {
   timeout -k 0.5 0.5 $REDUCED_BIN $1 $input >&$LOG
   cat $LOG | grep -E -q "$2" || exit 1
-}
-
-function desired() {
-  for input in $(ls input/*); do
-    run "-c" || exit 1
-  done
-  return 0
 }
 
 function desired_disaster() {
@@ -48,8 +51,8 @@ function desired_disaster() {
     return 1
     ;;
   esac
-  for input in $(ls input/*); do
-    run_disaster "-c" "$MESSAGE" || exit 1
+  for input in $(ls test/*); do
+    run_disaster "-r" "$MESSAGE" || exit 1
   done
   return 0
 }
