@@ -27,15 +27,16 @@ function conditional_exit(){
 }
 
 function run() {
-  timeout $TIMEOUT $REDUCED_BIN $1 $input >&$LOG
+  timeout $TIMEOUT $REDUCED_BIN $1 $input &> $LOG
   conditional_exit $? || exit 1
-  $ORIGIN_BIN $1 $input >&temp2
-  diff -q <(cat $LOG | cut -d: -f4) <(cat temp2 | cut -d: -f4) || exit 1
+  $ORIGIN_BIN $1 $input &> temp2
+  diff -q <(cat $LOG | cut -d: -f2-) <(cat temp2 | cut -d: -f2-) || exit 1
   grep -q "(null)" $LOG && exit 1
+  return 0
 }
 
 function run_disaster() {
-  timeout -k 0.5 0.5 $REDUCED_BIN $1 $input >&$LOG
+  timeout -k 0.5 0.5 $REDUCED_BIN $1 $input &> $LOG
   cat $LOG | grep -E -q "$2" || exit 1
 }
 
@@ -66,7 +67,7 @@ function desired_disaster() {
 
 function infinite() {
   r=$1
-  grep "Sanitizer" $LOG >&/dev/null && return 0
+  grep "Sanitizer" $LOG &> /dev/null && return 0
   if [[ $r -eq 124 ]]; then # timeout
     return 0
   fi
@@ -84,23 +85,23 @@ function outputcheckerror() {
 OPT=("-b" "-d" "-f" "-g" "-i" "-M" "-h" "-n" "-V" "-c" "-C"
   "-k" "-m" "-o" "-S" "-t" "-T" "--help")
 function undesired() {
-  { timeout -k 0.1 0.1 $REDUCED_BIN; } >&$LOG
+  { timeout -k 0.1 0.1 $REDUCED_BIN; } &> $LOG
   infinite $? || exit 1
   export srcdir=$BENCHMARK_HOME/tests
   export PATH="$(pwd):$PATH"
   touch file
   for opt in ${OPT[@]}; do
     if [[ $opt == '-o' || $opt == '-T' ]]; then
-      { timeout -k 0.1 0.1 $REDUCED_BIN $opt file; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt file; } &> $LOG
       infinite $? || exit 1
     else
-      { timeout -k 0.5 0.5 $REDUCED_BIN $opt file; } >&$LOG
+      { timeout -k 0.5 0.5 $REDUCED_BIN $opt file; } &> $LOG
     fi
     crash $? && exit 1
   done
   for opt in ${OPT[@]}; do
     if [[ $opt == "-k" ]]; then
-      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } &> $LOG
       err=$?
       outputcheckerror "invalid number at field start: invalid count at start of 'notexist'" && exit 1
       crash $err && exit 1
@@ -110,24 +111,24 @@ function undesired() {
       err=$?
       crash $err && exit 1
     elif [[ $opt == '-S' ]]; then
-      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } &> $LOG
       err=$?
       outputcheckerror "invalid -S argument 'notexist'" && exit 1
       crash $err && exit 1
     elif [[ $opt == '-t' ]]; then
-      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } &> $LOG
       err=$?
       outputcheckerror "multi-character tab 'notexist'" && exit 1
       crash $err && exit 1
     else
-      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } >&$LOG
+      { timeout -k 0.1 0.1 $REDUCED_BIN $opt notexist; } &> $LOG
       err=$?
       outputcheckerror "open failed: notexist: No such file or directory" && exit 1
       crash $err && exit 1
     fi
   done
   for t in $(find tests/ -maxdepth 1 -perm -100 -type f); do
-    { timeout -k 1 1 $t; } >&$LOG
+    { timeout -k 1 1 $t; } &> $LOG
     crash $? && exit 1
   done
   return 0
