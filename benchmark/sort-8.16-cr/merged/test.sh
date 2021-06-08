@@ -27,11 +27,17 @@ function conditional_exit(){
 }
 
 function run() {
-  timeout $TIMEOUT $REDUCED_BIN $1 $input >&$LOG
-  conditional_exit $? || exit 1
-  $ORIGIN_BIN $1 $input >&temp2
-  diff -q <(cat $LOG | cut -d: -f4) <(cat temp2 | cut -d: -f4) || exit 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $input &> $LOG; } &>> bashlog 
+  rret=$?
+  conditional_exit $rret || exit 1
+  $ORIGIN_BIN $1 $input &> temp2
+  oret=$?
+  out1=$(cat $LOG | cut -d: -f2- | tr -d '\0')
+  out2=$(cat temp2 | cut -d: -f2- | tr -d '\0')
+  diff -q <(echo $out1) <(echo $out2) || exit 1
   grep -q "(null)" $LOG && exit 1
+  test $oret = $rret || exit 1
+  return 0
 }
 
 function run_disaster() {

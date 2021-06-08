@@ -18,7 +18,7 @@ function clean() {
   return 0
 }
 
-function desired_run() {
+function run() {
   opts=$1
   file=$2
   temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 || exit 1)
@@ -29,7 +29,7 @@ function desired_run() {
 
 function desired() {
   for file in $(ls test/*); do
-    desired_run "-f" $file || exit 1
+    run "-f" $file || exit 1
   done
   return 0
 }
