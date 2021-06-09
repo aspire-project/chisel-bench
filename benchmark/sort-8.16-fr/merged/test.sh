@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export BENCHMARK_NAME=sort-8.16
-export BIN_NAME=sort-8.16-c
+export BIN_NAME=sort-8.16-fr
 export BENCHMARK_DIR=$CHISEL_BENCHMARK_HOME/benchmark/$BIN_NAME/merged
 export SRC=$BENCHMARK_DIR/$BENCHMARK_NAME.c
 export ORIGIN_BIN=$BENCHMARK_DIR/$BENCHMARK_NAME.origin
@@ -21,8 +21,8 @@ function clean() {
 function run() {
   opts=$1
   file=$2
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 || exit 1)
-  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1)
+  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 | tr -d '\0' || exit 1)
+  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1 | tr -d '\0')
   diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
   return 0
 }
