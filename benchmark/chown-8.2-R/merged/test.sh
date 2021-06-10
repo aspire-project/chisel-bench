@@ -19,9 +19,9 @@ function clean() {
 # $1 : option, $2 : file for reduced, $3 : file for original, $4 : usergroup specification
 function test_automate_0() {
 
-  { timeout $TIMEOUT $REDUCED_BIN $1 $(whoami):$6 $2; }  2>&1 | cut -d" " -f1,6,8  >&$LOG || exit 1
+  { timeout $TIMEOUT $REDUCED_BIN $1 $6:$7 $2; }  2>&1 | cut -d" " -f1,6,8  >&$LOG || exit 1
   ls -al $4 | cut -d ' ' -f 3,4 >temp1
-  $ORIGIN_BIN $1 $(whoami):$6 $3 2>&1 | cut -d" " -f1,6,8 >&log2
+  $ORIGIN_BIN $1 $6:$7 $3 2>&1 | cut -d" " -f1,6,8 >&log2
   ls -al $5 | cut -d ' ' -f 3,4 >temp2
   diff -q temp1 temp2 >&/dev/null || exit 1
   diff -q $LOG log2 >&/dev/null || exit 1
@@ -44,11 +44,11 @@ function test_automate_1() {
 function run() {
 
   
-  test_automate_0 $1 $2 $3 $4 $5 sudo || exit 1
-  test_automate_0 $1 $2 $3 $4 $5 sudo || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 "bin" "bin" || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 "bin" "bin" || exit 1
 
-  test_automate_0 $1 $2 $3 $4 $5 $(whoami) || exit 1
-  test_automate_0 $1 $2 $3 $4 $5 $(whoami) || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 "bin" "root" || exit 1
+  test_automate_0 $1 $2 $3 $4 $5 "bin" "root" || exit 1
 
   test_automate_1 $1 $2 $3 $4 $5 || exit 1
   test_automate_1 $1 $2 $3 $4 $5 || exit 1
