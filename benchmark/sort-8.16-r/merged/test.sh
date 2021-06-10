@@ -21,9 +21,9 @@ function clean() {
 function run() {
   opts=$1
   file=$2
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 | tr -d '\0' || exit 1)
-  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1)
-  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null | tr -d '\0' || exit 1
+  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 | tr -d '\0'; test ${PIPESTATUS[0]} -eq 0 || exit 1)
+  temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1 | tr -d '\0')
+  diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
   return 0
 }
 

@@ -21,22 +21,22 @@ function clean() {
 function run() {
   opts=$1
   file=$2
-  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 | tr -d '\0' || exit 1)
+  temp1=$({ timeout $TIMEOUT $REDUCED_BIN $opts $file; } 2>&1 | tr -d '\0'; test ${PIPESTATUS[0]} -eq 0 || exit 1)
   temp2=$({ $ORIGIN_BIN $opts $file; } 2>&1 | tr -d '\0')
   diff -q <(echo $temp1) <(echo $temp2) >&/dev/null || exit 1
+  return 0
+}
+
+function desired() {
+  for file in $(ls test/*); do
+    run "-fn" $file || exit 1
+  done
   return 0
 }
 
 function run_disaster() {
   timeout -k 0.5 0.5 $REDUCED_BIN $1 $input >&$LOG
   cat $LOG | grep -E -q "$2" || exit 1
-}
-
-function desired() {
-  for input in $(ls test/*); do
-    run "-fn"  $input || exit 1
-  done
-  return 0
 }
 
 function desired_disaster() {
